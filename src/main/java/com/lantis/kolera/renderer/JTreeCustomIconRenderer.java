@@ -5,7 +5,7 @@
  */
 package com.lantis.kolera.renderer;
 
-import com.lantis.kolera.model.Repository;
+import com.lantis.kolera.db.entity.Repository;
 import java.awt.Component;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
@@ -33,7 +33,7 @@ public class JTreeCustomIconRenderer extends DefaultTreeCellRenderer {
             if (node instanceof Repository) {
                 setIcon(specialIcon);
                 Repository repository = (Repository)node;
-                setText(repository.getName());
+                setText(repository.getRepositoryName());
             }
         }
         return this;

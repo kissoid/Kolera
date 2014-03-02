@@ -22,7 +22,7 @@ public class RepositoryTree extends JTree{
     }
  
     public RepositoryTree(){
-        //setCellRenderer(new JTreeCustomIconRenderer());
+        setCellRenderer(new JTreeCustomIconRenderer());
     }
     
 }

@@ -9,6 +9,9 @@ import com.lantis.kolera.component.FileList;
 import com.lantis.kolera.component.RepositoryTree;
 import com.lantis.kolera.db.entity.Repository;
 import com.lantis.kolera.service.RepositoryService;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -24,6 +27,7 @@ public class MainForm extends javax.swing.JFrame {
     private FileList<File> fileList;
     private RepositoryTree repositoryTree;
     private DefaultMutableTreeNode root;
+    private AddRepositoryDialog addRepositoryDialog;
 
     /**
      * Creates new form MainForm
@@ -31,31 +35,82 @@ public class MainForm extends javax.swing.JFrame {
     public MainForm() {
         initComponents();
         initCustomComponents();
-        setLocationRelativeTo(this);
+        setLocationRelativeTo(null);
     }
 
-    private void initCustomComponents(){
+    private void initCustomComponents() {
         ResourceBundle bundle = ResourceBundle.getBundle("com/lantis/kolera/language/i18n");
-        
+
         root = new DefaultMutableTreeNode(bundle.getString("mainForm.folders"));
-        createModel();
+        loadRepositories();
 
         repositoryTree = new RepositoryTree(root);
+        repositoryTree.setComponentPopupMenu(jPopupMenu1);
+        
+        repositoryTree.addMouseListener(createMouseListener());
+        repositoryTree.addKeyListener(createKeyListener());
+        
         jPanel2.add(new JScrollPane(repositoryTree), java.awt.BorderLayout.CENTER);
-        fileList = new FileList<File>(currentPathField);
+        fileList = new FileList<>(currentPathField);
         jPanel3.add(new JScrollPane(fileList), java.awt.BorderLayout.CENTER);
-        pack();        
+        pack();
     }
-    
-    private void createModel() {
+
+    public void loadRepositories() {
+        root.removeAllChildren();
         RepositoryService repositoryService = new RepositoryService();
-        
         List<Repository> repositoryList = repositoryService.retrieveRepositories();
-        
-        for(Repository repository : repositoryList){
+        for (Repository repository : repositoryList) {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode();
             node.setUserObject(repository);
             root.add(node);
+        }
+    }
+
+    private AddRepositoryDialog getAddRepositoryDialog() {
+        if (addRepositoryDialog == null) {
+            addRepositoryDialog = new AddRepositoryDialog(this, true);
+        }
+        return addRepositoryDialog;
+    }
+
+    private MouseListener createMouseListener() {
+        return new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() != 2) {
+                    return;
+                }
+                listRepositoryContent();
+            }
+        };
+    }
+
+    private KeyListener createKeyListener() {
+        return new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                if (!KeyEvent.getKeyText(evt.getKeyCode()).equals("Enter")) {
+                    return;
+                }
+                listRepositoryContent();
+            }
+        };
+    }
+
+    private void listRepositoryContent() {
+        if (repositoryTree.getSelectionPath() == null) {
+            return;
+        }
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) repositoryTree.getLastSelectedPathComponent();
+        if (selectedNode.getUserObject() == null) {
+            return;
+        }
+        Object node = selectedNode.getUserObject();
+        if (node instanceof Repository) {
+            Repository repository = (Repository) node;
+            File file = new File(repository.getRepositoryPath());
+            fileList.listFiles(file);
         }
     }
 
@@ -68,6 +123,8 @@ public class MainForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -78,6 +135,15 @@ public class MainForm extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/lantis/kolera/language/i18n"); // NOI18N
+        jMenuItem1.setText(bundle.getString("mainForm.addFolder")); // NOI18N
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(jMenuItem1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kolera");
@@ -147,6 +213,10 @@ public class MainForm extends javax.swing.JFrame {
         fileList.moveToUpDirectory();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        getAddRepositoryDialog().setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -188,10 +258,12 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanela;
+    private javax.swing.JPopupMenu jPopupMenu1;
     // End of variables declaration//GEN-END:variables
 }

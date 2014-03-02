@@ -36,4 +36,8 @@ public class RepositoryService {
         return getRepositoryJpaController().findAll();
     }
     
+    public void createRepository(Repository repository){
+        getRepositoryJpaController().create(repository);
+    }
+    
 }

@@ -58,7 +58,10 @@ public class FileList<T> extends JList {
         return new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jList1MouseClicked(evt);
+                if (evt.getClickCount() != 2) {
+                    return;
+                }
+                checkFileBeforeList();
             }
         };
     }
@@ -67,10 +70,15 @@ public class FileList<T> extends JList {
         return new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                jList1KeyReleased(evt);
+                switch (KeyEvent.getKeyText(evt.getKeyCode())) {
+                    case "Enter":
+                        checkFileBeforeList();
+                        break;
+                    case "Backspace":
+                        moveToUpDirectory();
+                        break;
+                }
             }
-            
-            
         };
     }
 
@@ -81,10 +89,12 @@ public class FileList<T> extends JList {
             return directoryItemList;
         }
         this.setModel(new AbstractListModel<File>() {
+            @Override
             public int getSize() {
                 return directoryItemList.length;
             }
 
+            @Override
             public File getElementAt(int i) {
                 return directoryItemList[i];
             }
@@ -95,22 +105,6 @@ public class FileList<T> extends JList {
         }
 
         return directoryItemList;
-    }
-
-    private void jList1KeyReleased(java.awt.event.KeyEvent evt) {
-        if (KeyEvent.getKeyText(evt.getKeyCode()).equals("Enter")) {
-            checkFileBeforeList();
-        } else if (KeyEvent.getKeyText(evt.getKeyCode()).equals("Backspace")) {
-            moveToUpDirectory();
-        }
-        
-    }
-
-    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {
-        if (evt.getClickCount() != 2) {
-            return;
-        }
-        checkFileBeforeList();
     }
 
     private void checkFileBeforeList() {
