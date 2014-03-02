@@ -6,9 +6,11 @@
 package com.lantis.kolera;
 
 import com.lantis.kolera.component.FileList;
-import com.lantis.kolera.component.RepositoryList;
-import com.lantis.kolera.model.Repository;
+import com.lantis.kolera.component.RepositoryTree;
+import com.lantis.kolera.db.entity.Repository;
+import com.lantis.kolera.service.RepositoryService;
 import java.io.File;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -20,7 +22,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class MainForm extends javax.swing.JFrame {
 
     private FileList<File> fileList;
-    private RepositoryList repositoryList;
+    private RepositoryTree repositoryTree;
     private DefaultMutableTreeNode root;
 
     /**
@@ -38,26 +40,23 @@ public class MainForm extends javax.swing.JFrame {
         root = new DefaultMutableTreeNode(bundle.getString("mainForm.folders"));
         createModel();
 
-        repositoryList = new RepositoryList(root);
-        jPanel2.add(new JScrollPane(repositoryList), java.awt.BorderLayout.CENTER);
+        repositoryTree = new RepositoryTree(root);
+        jPanel2.add(new JScrollPane(repositoryTree), java.awt.BorderLayout.CENTER);
         fileList = new FileList<File>(currentPathField);
         jPanel3.add(new JScrollPane(fileList), java.awt.BorderLayout.CENTER);
         pack();        
     }
     
     private void createModel() {
-        DefaultMutableTreeNode falan = new DefaultMutableTreeNode();
-        falan.setUserObject(new Repository("Falan", "xx/yy/zz1"));
-
-        DefaultMutableTreeNode filan = new DefaultMutableTreeNode();
-        filan.setUserObject(new Repository("Filan", "xx/yy/zz2"));
-
-        DefaultMutableTreeNode deneme = new DefaultMutableTreeNode();
-        deneme.setUserObject(new Repository("Deneme", "xx/yy/zz3"));
-
-        root.add(falan);
-        root.add(filan);
-        root.add(deneme);
+        RepositoryService repositoryService = new RepositoryService();
+        
+        List<Repository> repositoryList = repositoryService.retrieveRepositories();
+        
+        for(Repository repository : repositoryList){
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+            node.setUserObject(repository);
+            root.add(node);
+        }
     }
 
     /**
@@ -82,7 +81,6 @@ public class MainForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kolera");
-        setPreferredSize(new java.awt.Dimension(900, 500));
 
         jPanel1.setPreferredSize(new java.awt.Dimension(900, 500));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -111,11 +109,6 @@ public class MainForm extends javax.swing.JFrame {
 
         currentPathField.setEditable(false);
         currentPathField.setPreferredSize(new java.awt.Dimension(200, 20));
-        currentPathField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                currentPathFieldKeyReleased(evt);
-            }
-        });
         jPanela.add(currentPathField, java.awt.BorderLayout.CENTER);
 
         jPanel3.add(jPanela, java.awt.BorderLayout.NORTH);
@@ -153,10 +146,6 @@ public class MainForm extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         fileList.moveToUpDirectory();
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void currentPathFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_currentPathFieldKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_currentPathFieldKeyReleased
 
     /**
      * @param args the command line arguments
