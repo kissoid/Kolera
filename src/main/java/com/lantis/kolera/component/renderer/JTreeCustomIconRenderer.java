@@ -18,10 +18,12 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  */
 public class JTreeCustomIconRenderer extends DefaultTreeCellRenderer {
 
-    private ImageIcon specialIcon;
+    private ImageIcon repositoryIcon;
+    private ImageIcon repositoriesIcon;
 
     public JTreeCustomIconRenderer() {
-        specialIcon = new ImageIcon(JTreeCustomIconRenderer.class.getResource("/com/lantis/kolera/ui/icon/repository.png"));
+        repositoryIcon = new ImageIcon(JTreeCustomIconRenderer.class.getResource("/com/lantis/kolera/ui/icon/repository.png"));
+        repositoriesIcon = new ImageIcon(JTreeCustomIconRenderer.class.getResource("/com/lantis/kolera/ui/icon/repositories.png"));
     }
 
     @Override
@@ -29,9 +31,12 @@ public class JTreeCustomIconRenderer extends DefaultTreeCellRenderer {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) value;
         Object node = currentNode.getUserObject();
+        
         if (node != null) {
-            if (node instanceof Repository) {
-                setIcon(specialIcon);
+            if(currentNode.isRoot()){
+                setIcon(repositoriesIcon);
+            } else if (node instanceof Repository) {
+                setIcon(repositoryIcon);
                 Repository repository = (Repository)node;
                 setText(repository.getRepositoryName());
             }

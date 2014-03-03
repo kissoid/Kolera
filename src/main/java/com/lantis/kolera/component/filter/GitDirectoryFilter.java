@@ -13,9 +13,9 @@ import java.io.FileFilter;
  *
  * @author Adem
  */
-public class HiddenFileFilter implements FileFilter {
+public class GitDirectoryFilter implements FileFilter {
 
     public boolean accept(File file) {
-        return !file.isHidden();
+        return !file.getAbsolutePath().endsWith(".git");
     }
 }

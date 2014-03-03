@@ -6,10 +6,15 @@
 package com.lantis.kolera.ui;
 
 import com.lantis.kolera.db.entity.Repository;
+import com.lantis.kolera.util.GitUtil;
 import com.lantis.kolera.service.RepositoryService;
 import com.lantis.kolera.ui.thread.RepositoryTreeRefreshThread;
+import com.lantis.kolera.util.CommonUtil;
 import java.io.File;
+import java.io.IOException;
+import java.util.ResourceBundle;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,15 +23,16 @@ import javax.swing.JFileChooser;
 public class AddRepositoryDialog extends javax.swing.JDialog {
 
     private MainForm mainForm;
-    
+
     /**
      * Creates new form RepositoryAddDialog
+     *
      * @param parent
      * @param modal
      */
     public AddRepositoryDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        this.mainForm = (MainForm)parent;
+        this.mainForm = (MainForm) parent;
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -133,19 +139,35 @@ public class AddRepositoryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        addRepository();
-        new RepositoryTreeRefreshThread(mainForm.getRepositoryTree()).start();
-        dispose();
+        ResourceBundle bundle = ResourceBundle.getBundle("com/lantis/kolera/ui/language/i18n");
+        try {
+            addRepository();
+            GitUtil.createGitRepository(jTextField2.getText());
+            hideGitConfigurasyonDirectory();
+            new RepositoryTreeRefreshThread(mainForm.getRepositoryTree()).start();
+            JOptionPane.showMessageDialog(null, bundle.getString("addRepositoryDialog.repositoryCreated"));
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, bundle.getString("common.errorOccured"));
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void addRepository(){
+    private void hideGitConfigurasyonDirectory() throws IOException{
+            String gitDirectoryPath = jTextField2.getText() + System.getProperty("file.separator") + ".git";
+            File file = new File(gitDirectoryPath);
+            if (file.exists() && CommonUtil.isWindowsOS()) {
+                String hideDirectoryCommand = "attrib +h \"" + gitDirectoryPath + "\"";
+                Runtime.getRuntime().exec(hideDirectoryCommand);
+            }
+    }
+    
+    private void addRepository() {
         RepositoryService repositoryService = new RepositoryService();
         Repository repository = new Repository();
         repository.setRepositoryName(jTextField1.getText().trim());
         repository.setRepositoryPath(jTextField2.getText().trim());
         repositoryService.createRepository(repository);
     }
-    
+
     /**
      * @param args the command line arguments
      */

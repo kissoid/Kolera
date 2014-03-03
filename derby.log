@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Mon Mar 03 17:28:42 EET 2014:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.1 - (1458268): instance a816c00e-0144-888f-b0cf-000001d58c20 
-on database directory C:\Users\1001299\Documents\NetBeansProjects\kolera\koleraDB with class loader sun.misc.Launcher$AppClassLoader@749cd006 
-Loaded from file:/C:/Users/1001299/.m2/repository/org/apache/derby/derby/10.10.1.1/derby-10.10.1.1.jar
+Tue Mar 04 00:16:08 EET 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.1 - (1458268): instance a816c00e-0144-8a04-b5ac-000003595a50 
+on database directory C:\Users\Adem\Documents\NetBeansProjects\Kolera\koleraDB with class loader sun.misc.Launcher$AppClassLoader@749cd006 
+Loaded from file:/C:/Users/Adem/.m2/repository/org/apache/derby/derby/10.10.1.1/derby-10.10.1.1.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.7.0_45-b18
-user.dir=C:\Users\1001299\Documents\NetBeansProjects\kolera
+user.dir=C:\Users\Adem\Documents\NetBeansProjects\Kolera
 os.name=Windows 7
 os.arch=amd64
 os.version=6.1

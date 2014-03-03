@@ -9,8 +9,9 @@ package com.lantis.kolera.component;
  *
  * @author Adem
  */
-import com.lantis.kolera.component.filter.HiddenFileFilter;
+import com.lantis.kolera.component.filter.GitDirectoryFilter;
 import com.lantis.kolera.component.renderer.DetailedListCustomCellRenderer;
+import com.lantis.kolera.db.entity.Repository;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -32,6 +33,7 @@ public class FileList<T> extends JList {
 
     private File currentDirectory;
     private JTextField pathComponent;
+    private Repository selectedRepository;
 
     public FileList(JTextField pathComponent) {
         this.pathComponent = pathComponent;
@@ -83,7 +85,8 @@ public class FileList<T> extends JList {
     }
 
     public File[] listFiles(File directory) {
-        final File[] directoryItemList = directory.listFiles(new HiddenFileFilter());
+
+        final File[] directoryItemList = directory.listFiles(new GitDirectoryFilter());
         if (directoryItemList == null) {
             JOptionPane.showMessageDialog(null, "Could not acces to directory.");
             return directoryItemList;
@@ -100,9 +103,7 @@ public class FileList<T> extends JList {
             }
         });
         currentDirectory = directory;
-        if (pathComponent != null) {
-            pathComponent.setText(currentDirectory.getAbsolutePath());
-        }
+        changePathComponentText(currentDirectory.getAbsolutePath());
 
         return directoryItemList;
     }
@@ -141,10 +142,37 @@ public class FileList<T> extends JList {
             if (FileSystemView.getFileSystemView().isRoot(currentDirectory)) {
                 return;
             }
+            if (currentDirectory.getAbsolutePath().equals(selectedRepository.getRepositoryPath())) {
+                return;
+            }
             listFiles(currentDirectory.getParentFile());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
+    }
+
+    private void changePathComponentText(String path){
+        if (pathComponent != null && selectedRepository != null) {
+            String repositoryText = selectedRepository.getRepositoryName() + ":";
+            path = path.replace(selectedRepository.getRepositoryPath(), repositoryText);
+            pathComponent.setText(path);
+        }
+    }
+    
+    public File getCurrentDirectory() {
+        return currentDirectory;
+    }
+
+    public void setCurrentDirectory(File currentDirectory) {
+        this.currentDirectory = currentDirectory;
+    }
+
+    public Repository getSelectedRepository() {
+        return selectedRepository;
+    }
+
+    public void setSelectedRepository(Repository selectedRepository) {
+        this.selectedRepository = selectedRepository;
     }
 
     public JTextField getPathComponent() {

@@ -15,13 +15,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -47,7 +45,7 @@ public class MainForm extends javax.swing.JFrame {
         ResourceBundle bundle = ResourceBundle.getBundle("com/lantis/kolera/ui/language/i18n");
 
         root = new DefaultMutableTreeNode(bundle.getString("mainForm.folders"));
-        
+        root.add(new DefaultMutableTreeNode(bundle.getString("mainForm.loading")));
         repositoryTree = new RepositoryTree(root);
         repositoryTree.setComponentPopupMenu(jPopupMenu1);
 
@@ -57,6 +55,7 @@ public class MainForm extends javax.swing.JFrame {
         jPanel2.add(new JScrollPane(repositoryTree), java.awt.BorderLayout.CENTER);
         fileList = new FileList<>(currentPathField);
         jPanel3.add(new JScrollPane(fileList), java.awt.BorderLayout.CENTER);
+        repositoryTree.expandPath(new TreePath(root.getPath()));
         pack();
         new RepositoryTreeRefreshThread(repositoryTree).start();
     }
@@ -75,7 +74,7 @@ public class MainForm extends javax.swing.JFrame {
                 if (evt.getClickCount() != 2) {
                     return;
                 }
-                listRepositoryContent();
+                listRepositoryFolder();
             }
         };
     }
@@ -87,12 +86,12 @@ public class MainForm extends javax.swing.JFrame {
                 if (!KeyEvent.getKeyText(evt.getKeyCode()).equals("Enter")) {
                     return;
                 }
-                listRepositoryContent();
+                listRepositoryFolder();
             }
         };
     }
 
-    private void listRepositoryContent() {
+    private void listRepositoryFolder() {
         if (repositoryTree.getSelectionPath() == null) {
             return;
         }
@@ -104,6 +103,7 @@ public class MainForm extends javax.swing.JFrame {
         if (node instanceof Repository) {
             Repository repository = (Repository) node;
             File file = new File(repository.getRepositoryPath());
+            fileList.setSelectedRepository(repository);
             fileList.listFiles(file);
         }
     }
@@ -245,7 +245,8 @@ public class MainForm extends javax.swing.JFrame {
                 repositoryService.deleteRepository(repository.getRepoistoryId());
                 new RepositoryTreeRefreshThread(repositoryTree).start();
             } catch (NonexistentEntityException ex) {
-                JOptionPane.showMessageDialog(null, "Hata oluştu");
+                ResourceBundle bundle = ResourceBundle.getBundle("com/lantis/kolera/ui/language/i18n");
+                JOptionPane.showMessageDialog(null, bundle.getString("common.errorOccured"));
             }
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
