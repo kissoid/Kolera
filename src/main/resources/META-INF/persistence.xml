@@ -3,7 +3,7 @@
   <persistence-unit name="koleraPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
-    <class>com.lantis.kolera.ui.db.entity.Repository</class>
+    <class>com.lantis.kolera.db.entity.Repository</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby:koleraDB;create=true"/>
       <property name="javax.persistence.jdbc.password" value="kolera"/>

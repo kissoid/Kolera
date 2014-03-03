@@ -10,6 +10,7 @@ import com.lantis.kolera.component.RepositoryTree;
 import com.lantis.kolera.db.controller.exceptions.NonexistentEntityException;
 import com.lantis.kolera.db.entity.Repository;
 import com.lantis.kolera.service.RepositoryService;
+import com.lantis.kolera.ui.thread.RepositoryTreeRefreshThread;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -46,8 +47,7 @@ public class MainForm extends javax.swing.JFrame {
         ResourceBundle bundle = ResourceBundle.getBundle("com/lantis/kolera/ui/language/i18n");
 
         root = new DefaultMutableTreeNode(bundle.getString("mainForm.folders"));
-        loadRepositories();
-
+        
         repositoryTree = new RepositoryTree(root);
         repositoryTree.setComponentPopupMenu(jPopupMenu1);
 
@@ -58,17 +58,7 @@ public class MainForm extends javax.swing.JFrame {
         fileList = new FileList<>(currentPathField);
         jPanel3.add(new JScrollPane(fileList), java.awt.BorderLayout.CENTER);
         pack();
-    }
-
-    public void loadRepositories() {
-        root.removeAllChildren();
-        RepositoryService repositoryService = new RepositoryService();
-        List<Repository> repositoryList = repositoryService.retrieveRepositories();
-        for (Repository repository : repositoryList) {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-            node.setUserObject(repository);
-            root.add(node);
-        }
+        new RepositoryTreeRefreshThread(repositoryTree).start();
     }
 
     private AddRepositoryDialog getAddRepositoryDialog() {
@@ -118,6 +108,15 @@ public class MainForm extends javax.swing.JFrame {
         }
     }
 
+    public RepositoryTree getRepositoryTree() {
+        return repositoryTree;
+    }
+
+    public void setRepositoryTree(RepositoryTree repositoryTree) {
+        this.repositoryTree = repositoryTree;
+    }
+
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -244,7 +243,7 @@ public class MainForm extends javax.swing.JFrame {
                 Repository repository = (Repository) node;
                 RepositoryService repositoryService = new RepositoryService();
                 repositoryService.deleteRepository(repository.getRepoistoryId());
-                loadRepositories();
+                new RepositoryTreeRefreshThread(repositoryTree).start();
             } catch (NonexistentEntityException ex) {
                 JOptionPane.showMessageDialog(null, "Hata oluştu");
             }

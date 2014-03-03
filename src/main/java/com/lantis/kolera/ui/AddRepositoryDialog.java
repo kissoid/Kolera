@@ -7,6 +7,7 @@ package com.lantis.kolera.ui;
 
 import com.lantis.kolera.db.entity.Repository;
 import com.lantis.kolera.service.RepositoryService;
+import com.lantis.kolera.ui.thread.RepositoryTreeRefreshThread;
 import java.io.File;
 import javax.swing.JFileChooser;
 
@@ -133,7 +134,7 @@ public class AddRepositoryDialog extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         addRepository();
-        mainForm.loadRepositories();
+        new RepositoryTreeRefreshThread(mainForm.getRepositoryTree()).start();
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 

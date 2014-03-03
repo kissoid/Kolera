@@ -21,7 +21,7 @@ public class JTreeCustomIconRenderer extends DefaultTreeCellRenderer {
     private ImageIcon specialIcon;
 
     public JTreeCustomIconRenderer() {
-        specialIcon = new ImageIcon(JTreeCustomIconRenderer.class.getResource("/com/lantis/kolera/icon/repository.png"));
+        specialIcon = new ImageIcon(JTreeCustomIconRenderer.class.getResource("/com/lantis/kolera/ui/icon/repository.png"));
     }
 
     @Override
