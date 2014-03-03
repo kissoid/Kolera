@@ -9,8 +9,8 @@ package com.lantis.kolera.component;
  *
  * @author Adem
  */
-import com.lantis.kolera.filter.HiddenFileFilter;
-import com.lantis.kolera.renderer.DetailedListCustomCellRenderer;
+import com.lantis.kolera.component.filter.HiddenFileFilter;
+import com.lantis.kolera.component.renderer.DetailedListCustomCellRenderer;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;

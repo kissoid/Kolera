@@ -6,7 +6,7 @@
 
 package com.lantis.kolera.component;
 
-import com.lantis.kolera.renderer.JTreeCustomIconRenderer;
+import com.lantis.kolera.component.renderer.JTreeCustomIconRenderer;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 

@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lantis.kolera;
+package com.lantis.kolera.ui;
 
 import com.lantis.kolera.component.FileList;
 import com.lantis.kolera.component.RepositoryTree;
+import com.lantis.kolera.db.controller.exceptions.NonexistentEntityException;
 import com.lantis.kolera.db.entity.Repository;
 import com.lantis.kolera.service.RepositoryService;
 import java.awt.event.KeyEvent;
@@ -15,6 +16,9 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -39,17 +43,17 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     private void initCustomComponents() {
-        ResourceBundle bundle = ResourceBundle.getBundle("com/lantis/kolera/language/i18n");
+        ResourceBundle bundle = ResourceBundle.getBundle("com/lantis/kolera/ui/language/i18n");
 
         root = new DefaultMutableTreeNode(bundle.getString("mainForm.folders"));
         loadRepositories();
 
         repositoryTree = new RepositoryTree(root);
         repositoryTree.setComponentPopupMenu(jPopupMenu1);
-        
+
         repositoryTree.addMouseListener(createMouseListener());
         repositoryTree.addKeyListener(createKeyListener());
-        
+
         jPanel2.add(new JScrollPane(repositoryTree), java.awt.BorderLayout.CENTER);
         fileList = new FileList<>(currentPathField);
         jPanel3.add(new JScrollPane(fileList), java.awt.BorderLayout.CENTER);
@@ -125,6 +129,7 @@ public class MainForm extends javax.swing.JFrame {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -136,7 +141,7 @@ public class MainForm extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/lantis/kolera/language/i18n"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/lantis/kolera/ui/language/i18n"); // NOI18N
         jMenuItem1.setText(bundle.getString("mainForm.addFolder")); // NOI18N
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -144,6 +149,14 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         jPopupMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText(bundle.getString("mainForm.deleteFolder")); // NOI18N
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(jMenuItem2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kolera");
@@ -161,7 +174,7 @@ public class MainForm extends javax.swing.JFrame {
         jPanela.setPreferredSize(new java.awt.Dimension(349, 30));
         jPanela.setLayout(new java.awt.BorderLayout());
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/lantis/kolera/icon/folder-up-icon.png"))); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/lantis/kolera/ui/icon/folder-up-icon.png"))); // NOI18N
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setPreferredSize(new java.awt.Dimension(33, 33));
@@ -217,6 +230,27 @@ public class MainForm extends javax.swing.JFrame {
         getAddRepositoryDialog().setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        if (repositoryTree.getLastSelectedPathComponent() == null) {
+            return;
+        }
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) repositoryTree.getLastSelectedPathComponent();
+        if (selectedNode.getUserObject() == null) {
+            return;
+        }
+        Object node = selectedNode.getUserObject();
+        if (node instanceof Repository) {
+            try {
+                Repository repository = (Repository) node;
+                RepositoryService repositoryService = new RepositoryService();
+                repositoryService.deleteRepository(repository.getRepoistoryId());
+                loadRepositories();
+            } catch (NonexistentEntityException ex) {
+                JOptionPane.showMessageDialog(null, "Hata oluştu");
+            }
+        }
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -259,6 +293,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

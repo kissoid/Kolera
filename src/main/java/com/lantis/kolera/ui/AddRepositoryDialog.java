@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lantis.kolera;
+package com.lantis.kolera.ui;
 
 import com.lantis.kolera.db.entity.Repository;
 import com.lantis.kolera.service.RepositoryService;
@@ -49,7 +49,7 @@ public class AddRepositoryDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/lantis/kolera/language/i18n"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/lantis/kolera/ui/language/i18n"); // NOI18N
         jLabel1.setText(bundle.getString("addRepositoryDialog.label")); // NOI18N
 
         jLabel2.setText(bundle.getString("addRepositoryDialog.path")); // NOI18N

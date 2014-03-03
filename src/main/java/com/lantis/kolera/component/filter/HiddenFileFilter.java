@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.lantis.kolera.filter;
+package com.lantis.kolera.component.filter;
 
 import java.io.File;
 import java.io.FileFilter;

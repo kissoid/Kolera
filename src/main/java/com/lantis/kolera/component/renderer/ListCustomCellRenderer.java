@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.lantis.kolera.renderer;
+package com.lantis.kolera.component.renderer;
 
 import java.awt.Component;
 import java.io.File;
