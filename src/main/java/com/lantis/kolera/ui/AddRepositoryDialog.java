@@ -139,28 +139,46 @@ public class AddRepositoryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        createRepository();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void createRepository() {
         ResourceBundle bundle = ResourceBundle.getBundle("com/lantis/kolera/ui/language/i18n");
         try {
-            addRepository();
+            if (isExistsGitConfigurasyonDirectory()) {
+                JOptionPane.showMessageDialog(null, bundle.getString("addRepositoryDialog.repositoryAlreadyExists"));
+                return;
+            }
+
             GitUtil.createGitRepository(jTextField2.getText());
             hideGitConfigurasyonDirectory();
+            saveRepository();
             new RepositoryTreeRefreshThread(mainForm.getRepositoryTree()).start();
             JOptionPane.showMessageDialog(null, bundle.getString("addRepositoryDialog.repositoryCreated"));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, bundle.getString("common.errorOccured"));
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void hideGitConfigurasyonDirectory() throws IOException{
-            String gitDirectoryPath = jTextField2.getText() + System.getProperty("file.separator") + ".git";
-            File file = new File(gitDirectoryPath);
-            if (file.exists() && CommonUtil.isWindowsOS()) {
-                String hideDirectoryCommand = "attrib +h \"" + gitDirectoryPath + "\"";
-                Runtime.getRuntime().exec(hideDirectoryCommand);
-            }
     }
-    
-    private void addRepository() {
+
+    private void hideGitConfigurasyonDirectory() throws IOException {
+        String gitDirectoryPath = jTextField2.getText() + System.getProperty("file.separator") + ".git";
+        File file = new File(gitDirectoryPath);
+        if (file.exists() && CommonUtil.isWindowsOS()) {
+            String hideDirectoryCommand = "attrib +h \"" + gitDirectoryPath + "\"";
+            Runtime.getRuntime().exec(hideDirectoryCommand);
+        }
+    }
+
+    private boolean isExistsGitConfigurasyonDirectory() {
+        String gitDirectoryPath = jTextField2.getText() + System.getProperty("file.separator") + ".git";
+        File file = new File(gitDirectoryPath);
+        if (file.exists()) {
+            return true;
+        }
+        return false;
+    }
+
+    private void saveRepository() {
         RepositoryService repositoryService = new RepositoryService();
         Repository repository = new Repository();
         repository.setRepositoryName(jTextField1.getText().trim());
