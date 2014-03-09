@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.lantis.kolera.component.filter;
+package com.lantis.kolera.ui.component.filter;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -18,4 +18,5 @@ public class GitDirectoryFilter implements FileFilter {
     public boolean accept(File file) {
         return !file.getAbsolutePath().endsWith(".git");
     }
+    
 }

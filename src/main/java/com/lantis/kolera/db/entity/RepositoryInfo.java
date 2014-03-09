@@ -23,14 +23,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Adem
  */
 @Entity
-@Table(name="REPOSITORY")
+@Table(name="REPOSITORY_INFO")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Repository.findAll", query = "SELECT r FROM Repository r"),
-    @NamedQuery(name = "Repository.findByRepoistoryId", query = "SELECT r FROM Repository r WHERE r.repoistoryId = :repoistoryId"),
-    @NamedQuery(name = "Repository.findByRepositoryName", query = "SELECT r FROM Repository r WHERE r.repositoryName = :repositoryName"),
-    @NamedQuery(name = "Repository.findByRepositoryPath", query = "SELECT r FROM Repository r WHERE r.repositoryPath = :repositoryPath")})
-public class Repository implements Serializable {
+    @NamedQuery(name = "RepositoryInfo.findAll", query = "SELECT r FROM RepositoryInfo r"),
+    @NamedQuery(name = "RepositoryInfo.findByRepoistoryId", query = "SELECT r FROM RepositoryInfo r WHERE r.repoistoryId = :repoistoryId"),
+    @NamedQuery(name = "RepositoryInfo.findByRepositoryName", query = "SELECT r FROM RepositoryInfo r WHERE r.repositoryName = :repositoryName"),
+    @NamedQuery(name = "RepositoryInfo.findByRepositoryPath", query = "SELECT r FROM RepositoryInfo r WHERE r.repositoryPath = :repositoryPath")})
+public class RepositoryInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,14 +44,14 @@ public class Repository implements Serializable {
     @Column(name = "repository_path", nullable = false, length = 255)
     private String repositoryPath;
 
-    public Repository() {
+    public RepositoryInfo() {
     }
 
-    public Repository(Integer repoistoryId) {
+    public RepositoryInfo(Integer repoistoryId) {
         this.repoistoryId = repoistoryId;
     }
 
-    public Repository(Integer repoistoryId, String repositoryName, String repositoryPath) {
+    public RepositoryInfo(Integer repoistoryId, String repositoryName, String repositoryPath) {
         this.repoistoryId = repoistoryId;
         this.repositoryName = repositoryName;
         this.repositoryPath = repositoryPath;
@@ -91,10 +91,10 @@ public class Repository implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Repository)) {
+        if (!(object instanceof RepositoryInfo)) {
             return false;
         }
-        Repository other = (Repository) object;
+        RepositoryInfo other = (RepositoryInfo) object;
         if ((this.repoistoryId == null && other.repoistoryId != null) || (this.repoistoryId != null && !this.repoistoryId.equals(other.repoistoryId))) {
             return false;
         }

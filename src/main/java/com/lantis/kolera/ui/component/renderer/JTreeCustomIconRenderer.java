@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lantis.kolera.component.renderer;
+package com.lantis.kolera.ui.component.renderer;
 
-import com.lantis.kolera.db.entity.Repository;
+import com.lantis.kolera.db.entity.RepositoryInfo;
 import java.awt.Component;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
@@ -35,9 +35,9 @@ public class JTreeCustomIconRenderer extends DefaultTreeCellRenderer {
         if (node != null) {
             if(currentNode.isRoot()){
                 setIcon(repositoriesIcon);
-            } else if (node instanceof Repository) {
+            } else if (node instanceof RepositoryInfo) {
                 setIcon(repositoryIcon);
-                Repository repository = (Repository)node;
+                RepositoryInfo repository = (RepositoryInfo)node;
                 setText(repository.getRepositoryName());
             }
         }

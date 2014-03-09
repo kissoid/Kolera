@@ -4,9 +4,9 @@
  * and open the template in the editor.
  */
 
-package com.lantis.kolera.component;
+package com.lantis.kolera.ui.component;
 
-import com.lantis.kolera.component.renderer.JTreeCustomIconRenderer;
+import com.lantis.kolera.ui.component.renderer.JTreeCustomIconRenderer;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 

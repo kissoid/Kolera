@@ -5,10 +5,10 @@
  */
 package com.lantis.kolera.ui;
 
-import com.lantis.kolera.component.FileList;
-import com.lantis.kolera.component.RepositoryTree;
+import com.lantis.kolera.ui.component.FileList;
+import com.lantis.kolera.ui.component.RepositoryTree;
 import com.lantis.kolera.db.controller.exceptions.NonexistentEntityException;
-import com.lantis.kolera.db.entity.Repository;
+import com.lantis.kolera.db.entity.RepositoryInfo;
 import com.lantis.kolera.service.RepositoryService;
 import com.lantis.kolera.ui.thread.RepositoryTreeRefreshThread;
 import java.awt.event.KeyEvent;
@@ -100,8 +100,8 @@ public class MainForm extends javax.swing.JFrame {
             return;
         }
         Object node = selectedNode.getUserObject();
-        if (node instanceof Repository) {
-            Repository repository = (Repository) node;
+        if (node instanceof RepositoryInfo) {
+            RepositoryInfo repository = (RepositoryInfo) node;
             File file = new File(repository.getRepositoryPath());
             fileList.setSelectedRepository(repository);
             fileList.listFiles(file);
@@ -129,6 +129,7 @@ public class MainForm extends javax.swing.JFrame {
         jPopupMenu1 = new javax.swing.JPopupMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -139,6 +140,16 @@ public class MainForm extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+
+        jPopupMenu1.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                jPopupMenu1PopupMenuWillBecomeVisible(evt);
+            }
+        });
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/lantis/kolera/ui/language/i18n"); // NOI18N
         jMenuItem1.setText(bundle.getString("mainForm.addFolder")); // NOI18N
@@ -156,6 +167,9 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         jPopupMenu1.add(jMenuItem2);
+
+        jMenuItem3.setText(bundle.getString("mainForm.createVersion")); // NOI18N
+        jPopupMenu1.add(jMenuItem3);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kolera");
@@ -238,9 +252,9 @@ public class MainForm extends javax.swing.JFrame {
             return;
         }
         Object node = selectedNode.getUserObject();
-        if (node instanceof Repository) {
+        if (node instanceof RepositoryInfo) {
             try {
-                Repository repository = (Repository) node;
+                RepositoryInfo repository = (RepositoryInfo) node;
                 RepositoryService repositoryService = new RepositoryService();
                 repositoryService.deleteRepository(repository.getRepoistoryId());
                 new RepositoryTreeRefreshThread(repositoryTree).start();
@@ -251,6 +265,29 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void jPopupMenu1PopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jPopupMenu1PopupMenuWillBecomeVisible
+        repositoryTreePopupVisibility();
+    }//GEN-LAST:event_jPopupMenu1PopupMenuWillBecomeVisible
+
+    private void repositoryTreePopupVisibility(){
+        DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)repositoryTree.getLastSelectedPathComponent();
+        if(currentNode == null){
+            return;
+        }
+        
+        if(currentNode == root){
+            jMenuItem1.setEnabled(true);
+            jMenuItem2.setEnabled(false);
+            jMenuItem3.setEnabled(false);
+        }
+        
+        if(currentNode.getParent() == root){
+            jMenuItem1.setEnabled(false);
+            jMenuItem2.setEnabled(true);
+            jMenuItem3.setEnabled(true);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -294,6 +331,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

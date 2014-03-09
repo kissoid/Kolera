@@ -5,7 +5,7 @@
  */
 package com.lantis.kolera.ui;
 
-import com.lantis.kolera.db.entity.Repository;
+import com.lantis.kolera.db.entity.RepositoryInfo;
 import com.lantis.kolera.util.GitUtil;
 import com.lantis.kolera.service.RepositoryService;
 import com.lantis.kolera.ui.thread.RepositoryTreeRefreshThread;
@@ -155,6 +155,7 @@ public class AddRepositoryDialog extends javax.swing.JDialog {
             saveRepository();
             new RepositoryTreeRefreshThread(mainForm.getRepositoryTree()).start();
             JOptionPane.showMessageDialog(null, bundle.getString("addRepositoryDialog.repositoryCreated"));
+            cleanFields();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, bundle.getString("common.errorOccured"));
         }
@@ -180,12 +181,17 @@ public class AddRepositoryDialog extends javax.swing.JDialog {
 
     private void saveRepository() {
         RepositoryService repositoryService = new RepositoryService();
-        Repository repository = new Repository();
+        RepositoryInfo repository = new RepositoryInfo();
         repository.setRepositoryName(jTextField1.getText().trim());
         repository.setRepositoryPath(jTextField2.getText().trim());
         repositoryService.createRepository(repository);
     }
 
+    private void cleanFields(){
+        jTextField1.setText("");
+        jTextField2.setText("");
+    }
+    
     /**
      * @param args the command line arguments
      */

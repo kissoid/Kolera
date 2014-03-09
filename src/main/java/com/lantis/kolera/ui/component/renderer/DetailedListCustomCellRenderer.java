@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lantis.kolera.component.renderer;
+package com.lantis.kolera.ui.component.renderer;
 
 import java.awt.Color;
 import java.awt.Component;

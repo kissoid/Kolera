@@ -6,7 +6,7 @@
 package com.lantis.kolera.db.controller;
 
 import com.lantis.kolera.db.controller.exceptions.NonexistentEntityException;
-import com.lantis.kolera.db.entity.Repository;
+import com.lantis.kolera.db.entity.RepositoryInfo;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -31,7 +31,7 @@ public class RepositoryJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Repository repository) {
+    public void create(RepositoryInfo repository) {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -45,7 +45,7 @@ public class RepositoryJpaController implements Serializable {
         }
     }
 
-    public void update(Repository repository) throws NonexistentEntityException, Exception {
+    public void update(RepositoryInfo repository) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -73,9 +73,9 @@ public class RepositoryJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Repository repository;
+            RepositoryInfo repository;
             try {
-                repository = em.getReference(Repository.class, id);
+                repository = em.getReference(RepositoryInfo.class, id);
                 repository.getRepoistoryId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The repository with id " + id + " no longer exists.", enfe);
@@ -89,11 +89,11 @@ public class RepositoryJpaController implements Serializable {
         }
     }
 
-    public List<Repository> findAll() {
+    public List<RepositoryInfo> findAll() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Repository.class));
+            cq.select(cq.from(RepositoryInfo.class));
             Query q = em.createQuery(cq);
             return q.getResultList();
         } finally {
@@ -101,11 +101,11 @@ public class RepositoryJpaController implements Serializable {
         }
     }
 
-    public List<Repository> findRange(int maxResults, int firstResult) {
+    public List<RepositoryInfo> findRange(int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Repository.class));
+            cq.select(cq.from(RepositoryInfo.class));
             Query q = em.createQuery(cq);
             q.setMaxResults(maxResults);
             q.setFirstResult(firstResult);
@@ -115,10 +115,10 @@ public class RepositoryJpaController implements Serializable {
         }
     }
 
-    public Repository findRepository(Integer id) {
+    public RepositoryInfo findRepository(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Repository.class, id);
+            return em.find(RepositoryInfo.class, id);
         } finally {
             em.close();
         }
@@ -128,7 +128,7 @@ public class RepositoryJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Repository> rt = cq.from(Repository.class);
+            Root<RepositoryInfo> rt = cq.from(RepositoryInfo.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

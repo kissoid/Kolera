@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lantis.kolera.component;
+package com.lantis.kolera.ui.component;
 
 /**
  *
  * @author Adem
  */
-import com.lantis.kolera.component.filter.GitDirectoryFilter;
-import com.lantis.kolera.component.renderer.DetailedListCustomCellRenderer;
-import com.lantis.kolera.db.entity.Repository;
+import com.lantis.kolera.ui.component.filter.GitDirectoryFilter;
+import com.lantis.kolera.ui.component.renderer.DetailedListCustomCellRenderer;
+import com.lantis.kolera.db.entity.RepositoryInfo;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -33,7 +33,7 @@ public class FileList<T> extends JList {
 
     private File currentDirectory;
     private JTextField pathComponent;
-    private Repository selectedRepository;
+    private RepositoryInfo selectedRepository;
 
     public FileList(JTextField pathComponent) {
         this.pathComponent = pathComponent;
@@ -167,11 +167,11 @@ public class FileList<T> extends JList {
         this.currentDirectory = currentDirectory;
     }
 
-    public Repository getSelectedRepository() {
+    public RepositoryInfo getSelectedRepository() {
         return selectedRepository;
     }
 
-    public void setSelectedRepository(Repository selectedRepository) {
+    public void setSelectedRepository(RepositoryInfo selectedRepository) {
         this.selectedRepository = selectedRepository;
     }
 

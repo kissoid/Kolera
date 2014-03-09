@@ -1,6 +1,7 @@
 package org.dstadler.jgit.porcelain;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.dstadler.jgit.helper.CookbookHelper;
 import org.eclipse.jgit.api.Git;
@@ -24,7 +25,7 @@ public class WalkAllCommits {
         Iterable<RevCommit> commits = git.log().all().call();
         int count = 0;
         for (RevCommit commit : commits) {
-            System.out.println("LogCommit: " + commit);
+            System.out.println("LogCommit: " + new Date(commit.getCommitTime()));
             count++;
         }
         System.out.println(count);

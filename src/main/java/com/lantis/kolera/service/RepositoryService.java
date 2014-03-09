@@ -8,7 +8,7 @@ package com.lantis.kolera.service;
 
 import com.lantis.kolera.db.controller.RepositoryJpaController;
 import com.lantis.kolera.db.controller.exceptions.NonexistentEntityException;
-import com.lantis.kolera.db.entity.Repository;
+import com.lantis.kolera.db.entity.RepositoryInfo;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -33,11 +33,11 @@ public class RepositoryService {
         return new RepositoryJpaController(getEmf());
     }
     
-    public List<Repository> retrieveRepositories(){
+    public List<RepositoryInfo> retrieveRepositories(){
         return getRepositoryJpaController().findAll();
     }
     
-    public void createRepository(Repository repository){
+    public void createRepository(RepositoryInfo repository){
         getRepositoryJpaController().create(repository);
     }
     
