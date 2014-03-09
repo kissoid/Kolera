@@ -33,7 +33,7 @@ public class FileList<T> extends JList {
 
     private File currentDirectory;
     private JTextField pathComponent;
-    private RepositoryInfo selectedRepository;
+    private RepositoryInfo selectedRepositoryInfo;
 
     public FileList(JTextField pathComponent) {
         this.pathComponent = pathComponent;
@@ -142,7 +142,7 @@ public class FileList<T> extends JList {
             if (FileSystemView.getFileSystemView().isRoot(currentDirectory)) {
                 return;
             }
-            if (currentDirectory.getAbsolutePath().equals(selectedRepository.getRepositoryPath())) {
+            if (currentDirectory.getAbsolutePath().equals(selectedRepositoryInfo.getRepositoryPath())) {
                 return;
             }
             listFiles(currentDirectory.getParentFile());
@@ -152,9 +152,9 @@ public class FileList<T> extends JList {
     }
 
     private void changePathComponentText(String path){
-        if (pathComponent != null && selectedRepository != null) {
-            String repositoryText = selectedRepository.getRepositoryName() + ":";
-            path = path.replace(selectedRepository.getRepositoryPath(), repositoryText);
+        if (pathComponent != null && selectedRepositoryInfo != null) {
+            String repositoryText = selectedRepositoryInfo.getRepositoryName() + ":";
+            path = path.replace(selectedRepositoryInfo.getRepositoryPath(), repositoryText);
             pathComponent.setText(path);
         }
     }
@@ -167,20 +167,20 @@ public class FileList<T> extends JList {
         this.currentDirectory = currentDirectory;
     }
 
-    public RepositoryInfo getSelectedRepository() {
-        return selectedRepository;
-    }
-
-    public void setSelectedRepository(RepositoryInfo selectedRepository) {
-        this.selectedRepository = selectedRepository;
-    }
-
     public JTextField getPathComponent() {
         return pathComponent;
     }
 
     public void setPathComponent(JTextField pathComponent) {
         this.pathComponent = pathComponent;
+    }
+
+    public RepositoryInfo getSelectedRepositoryInfo() {
+        return selectedRepositoryInfo;
+    }
+
+    public void setSelectedRepositoryInfo(RepositoryInfo selectedRepositoryInfo) {
+        this.selectedRepositoryInfo = selectedRepositoryInfo;
     }
 
 }

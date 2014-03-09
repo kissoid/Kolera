@@ -21,5 +21,12 @@ public class GitUtil {
         Repository repository = FileRepositoryBuilder.create(new File(repositoryPath, ".git"));
         repository.create();
     }
+ 
+    public static Repository getRepository(String folderPath) throws IOException{
+        File file = new File(folderPath);
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        Repository repository = builder.findGitDir(file).build();
+        return repository;
+    }
     
 }

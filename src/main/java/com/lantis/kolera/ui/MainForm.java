@@ -10,16 +10,26 @@ import com.lantis.kolera.ui.component.RepositoryTree;
 import com.lantis.kolera.db.controller.exceptions.NonexistentEntityException;
 import com.lantis.kolera.db.entity.RepositoryInfo;
 import com.lantis.kolera.service.RepositoryService;
+import com.lantis.kolera.ui.model.RepositoryStatus;
 import com.lantis.kolera.ui.thread.RepositoryTreeRefreshThread;
+import com.lantis.kolera.util.GitUtil;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.errors.NoWorkTreeException;
+import org.eclipse.jgit.lib.Repository;
 
 /**
  *
@@ -101,9 +111,9 @@ public class MainForm extends javax.swing.JFrame {
         }
         Object node = selectedNode.getUserObject();
         if (node instanceof RepositoryInfo) {
-            RepositoryInfo repository = (RepositoryInfo) node;
-            File file = new File(repository.getRepositoryPath());
-            fileList.setSelectedRepository(repository);
+            RepositoryInfo repositoryInfo = (RepositoryInfo) node;
+            File file = new File(repositoryInfo.getRepositoryPath());
+            fileList.setSelectedRepositoryInfo(repositoryInfo);
             fileList.listFiles(file);
         }
     }
@@ -116,7 +126,6 @@ public class MainForm extends javax.swing.JFrame {
         this.repositoryTree = repositoryTree;
     }
 
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -137,6 +146,10 @@ public class MainForm extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         currentPathField = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -217,10 +230,37 @@ public class MainForm extends javax.swing.JFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 279, Short.MAX_VALUE)
+            .addGap(0, 256, Short.MAX_VALUE)
         );
 
         jPanel1.add(jPanel4, java.awt.BorderLayout.EAST);
+
+        jToolBar1.setRollover(true);
+
+        jButton2.setText("jButton2");
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton2);
+
+        jButton3.setText("jButton3");
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton3);
+
+        jButton4.setText("jButton4");
+        jButton4.setFocusable(false);
+        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton4);
+
+        jPanel1.add(jToolBar1, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -269,25 +309,56 @@ public class MainForm extends javax.swing.JFrame {
         repositoryTreePopupVisibility();
     }//GEN-LAST:event_jPopupMenu1PopupMenuWillBecomeVisible
 
-    private void repositoryTreePopupVisibility(){
-        DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)repositoryTree.getLastSelectedPathComponent();
-        if(currentNode == null){
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        listChangedAndAddedFiles();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void repositoryTreePopupVisibility() {
+        DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) repositoryTree.getLastSelectedPathComponent();
+        if (currentNode == null) {
             return;
         }
-        
-        if(currentNode == root){
+
+        if (currentNode == root) {
             jMenuItem1.setEnabled(true);
             jMenuItem2.setEnabled(false);
             jMenuItem3.setEnabled(false);
         }
-        
-        if(currentNode.getParent() == root){
+
+        if (currentNode.getParent() == root) {
             jMenuItem1.setEnabled(false);
             jMenuItem2.setEnabled(true);
             jMenuItem3.setEnabled(true);
         }
     }
-    
+
+    private void listChangedAndAddedFiles() {
+        try {
+            Repository repository = GitUtil.getRepository(fileList.getSelectedRepositoryInfo().getRepositoryPath());
+            Status status;
+            status = new Git(repository).status().call();
+            RepositoryStatus repositoryStatus = new RepositoryStatus();
+            repositoryStatus.setAddedItems(status.getAdded());
+            repositoryStatus.setChangedItems(status.getChanged());
+            repositoryStatus.setConflictingItems(status.getConflicting());
+            repositoryStatus.setConflictingStageStateItems(status.getConflictingStageState());
+            repositoryStatus.setIgnoredNotInIndexItems(status.getIgnoredNotInIndex());
+            repositoryStatus.setMissingItems(status.getMissing());
+            repositoryStatus.setMissingItems(status.getModified());
+            repositoryStatus.setRemovedItems(status.getRemoved());
+            repositoryStatus.setUntrackedItems(status.getUntracked());
+            repositoryStatus.setUntrackedFolders(status.getUntrackedFolders());
+
+            repository.close();
+        } catch (IOException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GitAPIException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoWorkTreeException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -299,7 +370,7 @@ public class MainForm extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -317,6 +388,7 @@ public class MainForm extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new MainForm().setVisible(true);
             }
@@ -326,6 +398,9 @@ public class MainForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField currentPathField;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -338,5 +413,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanela;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }
